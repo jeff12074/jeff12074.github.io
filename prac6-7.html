@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>6-7</title>
+	<script>
+		function compare(){
+			var input = prompt("숫자 입력");            
+			input = parseInt(input);
+			var tail = input % 10;
+			var head = input;
+			while(true){
+				if(head < 10) { head = parseInt(head); break; }
+				else head /= 10;
+			}
+			if(head == tail) document.write(input + ": 같음")
+			else document.write(input + ": 다름")
+		}
+	</script>
+</head>
+<body>
+	<h3>큰 자리수와 낮은 자리수 같은지 비교</h3>
+	<hr>
+	<script>
+		compare();
+	</script>
+</body>
+</html>
