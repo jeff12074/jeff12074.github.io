@@ -6,6 +6,10 @@
 		function compare(){
 			var input = prompt("숫자 입력");            
 			input = parseInt(input);
+			if(isNaN(input)){
+				alert("숫자가 아닙니다.");
+				return;
+			}
 			var tail = input % 10;
 			var head = input;
 			while(true){
