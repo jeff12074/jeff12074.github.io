@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>7-9(3)</title>
+</head>
+<body>
+	<h3>book 객체 만들기</h3>
+	<hr>
+	<script>
+		function test() {
+			document.write("book : " + this.author + ", " + this.title + ", " + this.price);
+		}
+		function Book(author, title, price) {
+			this.author = author;
+			this.title = title;
+			this.price = price;
+			this.print = test();
+		}
+		var book = Book("황기태", "HTML5", 20000);
+		book.print();
+	</script>
+
+</body>
+</html>

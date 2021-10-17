@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>7-2</title>
+</head>
+<body>
+	<h3>정수 5개 입력받아 역순으로 출력</h3>
+	<hr>
+	<script>
+		var n = [];
+		for(var i=0; i<5; i++) {
+			n[i] = prompt("정수 입력");
+		}
+		document.write("입력된 수의 배열<br>" + n + "<br><hr>역순으로 재정렬된 배열<br>");
+		var reversedNumber = n.reverse();
+		document.write(reversedNumber)
+	</script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>7-9(2)</title>
+</head>
+<body>
+	<h3>book 객체 만들기</h3>
+	<hr>
+	<script>
+		function test() {
+			document.write("book : " + this.author + ", " + this.title + ", " + this.price);
+		}
+		var book = {
+			author : "황기태",
+			title : "HTML5",
+			price : 20000,
+			print : test
+		};
+		book.print();
+	</script>
+</body>
+</html>

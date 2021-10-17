@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>7-4</title>
+	<script>
+		function backColor() {
+			if(now.getDay>0) document.body.style.background = "gold";
+			else document.body.style.background = "pink";
+		}
+	</script>
+</head>
+<body>
+	<h3>일요일은 pink, 다른 요일은 gold 배경</h3>
+	<hr>
+	<script>
+        var now = new Date();
+		var day2 = ["일요일","월요일","화요일","수요일","목요일","금요일","토요일"];
+		document.write("오늘 : " + now.getDate() +"일, ");
+		document.write(day2[now.getDay()]);
+		backColor();
+	</script>
+</body>
+</html>

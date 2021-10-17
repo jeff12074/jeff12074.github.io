@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>7-5</title>
+</head>
+<body>
+	<script>
+		var names = new Array("wonsun", "jaemoonlee", "kitae", "gracehwang");
+		var stringNames = names.join(" ");
+		document.write("(1) 이름 : " + stringNames + "<br>");
+		var maxString = names[0].length;
+		var maxIdx;
+		for(var idx=0; idx<names.length; idx++) {
+			if(maxString < names[idx].length) {
+				maxString = names[idx].length;
+				maxIdx = idx;
+			}
+		}
+		document.write("(2) 가장 긴 이름 : " + names[maxIdx] + "<br>");
+		var sortedNames = names.sort();
+		document.write("(3) 사전순 : " + sortedNames[0] + "<br>");
+		var sortingString = sortedNames.join(" ");
+		document.write("(4) 증가순 : " + sortingString)		
+	</script>
+
+</body>
+</html>
