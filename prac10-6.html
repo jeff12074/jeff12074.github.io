@@ -1,0 +1,53 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>10-6</title>
+	<style>
+		div {
+			background: aliceblue;
+			border: 1px solid blue;
+			width:150px;
+		}
+	</style>
+	<script>
+		var timeId = null;
+
+		function start() {
+			var now = new Date();
+			var hour = now.getHours();
+			var min = now.getMinutes();
+			var sec = now.getSeconds();
+			var ampm;
+			if(hour < 12) ampm = "오전";
+			else {
+				ampm = "오후";
+				hour -= 12;
+			}
+
+			var timer = document.getElementById("timer");
+			timer.innerHTML = ampm + " " + hour + ": " + min + ": " + sec;
+		}
+
+		function clk() {
+			if(timeId == null) {
+				timeId = setInterval("start()", 100);
+				var timer = document.getElementById("timer");
+				timer.style.color = "black";
+			}
+			else {
+				clearInterval(timeId);
+				timeId = null;
+				var timer = document.getElementById("timer");
+				timer.style.color = "lightgray";
+			}
+		}
+	</script>
+</head>
+<body onload="start()">
+	<h3>div 태그에 시계 만들기</h3>
+	시계를 클릭하면 시계가 멈추고 다시 클릭하면 가기 시작한다.
+	<hr>
+	<div id="timer" onclick="clk()"></div>
+</body>
+</html>

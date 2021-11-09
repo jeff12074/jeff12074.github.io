@@ -1,0 +1,93 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>10-8</title>
+	<style>
+		td { width: 100px; }
+		input[type=text] { width: 100px; }
+	</style>
+
+	<script>
+		var score = 0;
+		var count = 5;
+
+		var timeId;
+
+		function load() {
+			for(var i=1; i<5; i++) {
+				var num1 = Math.floor(Math.random()*11);
+				var num2 = Math.floor(Math.random()*11);
+				var exp = Math.floor(Math.random()*4);
+				switch(exp) {
+					case 0 : exp = "+"; break;
+					case 1 : exp = "-"; break;
+					case 2 : exp = "*"; break;
+					case 3 : exp = "/"; break;
+				}
+				var question = document.getElementById("q" + i);
+				question.innerHTML = num1 + exp + num2;
+				question.style.textDecoration = "none";
+
+				var answer = document.getElementById("a" + i);
+				answer.value = "";
+			}
+			score = 0;
+			count = 6;
+			document.getElementById("score").innerHTML = score;
+			clearInterval(timeId);
+			timeId = setInterval("countDown()", 1000);
+		}
+
+		function check() {
+			for(var i=1; i<5; i++) {
+				var question = document.getElementById("q" + i);
+				var answer = document.getElementById("a" + i);
+
+				if(eval(question.innerHTML) == answer.value) score++;
+				else question.style.textDecoration = "line-through";
+			}
+				document.getElementById("score").innerHTML = score;
+		}
+
+		function countDown() {
+			if(count != 1){
+				count--;
+				document.getElementById("count").innerHTML = count;
+			}
+			else {
+				document.getElementById("count").innerHTML = 0;
+				alert("시간 종료!");
+				clearInterval(timeId);
+				check();
+			}
+		}
+	</script>
+</head>
+<body onload="load()">
+	<h3>산수 문제를 풀어 봅시다.</h3>
+	<div>수식을 계산하여 답을 입력하고 채점 버튼을 누르세요.</div>
+	<div>남은시간 <span id="count">5</span></div>
+	<hr>
+	<form>
+	<table>
+		<tr>
+			<td><div id="q1" >q1</div></td><td><input type="text" id="a1"></td>
+		</tr>
+		<tr>
+			<td><div id="q2" >q2</div></td><td><input type="text" id="a2"></td>
+		</tr>
+		<tr>
+			<td><div id="q3" >q3</div></td><td><input type="text" id="a3"></td>
+		</tr>
+		<tr>
+			<td><div id="q4" >q4</div></td><td><input type="text" id="a4"></td>
+		</tr>
+		<tr>
+			<td><button onclick="load()" type="button">다시</button></td>
+			<td><div id="score">0</div></td>
+		</tr>
+	</table>
+	</form>
+</body>
+</html>
