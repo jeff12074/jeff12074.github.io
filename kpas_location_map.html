@@ -1,0 +1,174 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <title>간단한 지도 표시하기</title>
+
+    <!-- jquery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> 
+    
+    <!-- naver map -->
+    <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=e962p4e51b"></script>
+
+</head>
+<body>
+<div id="map" style="width:100%;height:400px;"></div>
+<div id="table"></div>
+<script>
+
+var HOME_PATH = "https://navermaps.github.io/maps.js/docs",
+    urlPrefix = HOME_PATH +'/data/region',
+    urlSuffix = '.json',
+    regionGeoJson = [],
+    loadCount = 0;
+
+var map = new naver.maps.Map(document.getElementById('map'), {
+    zoom: 7,
+    mapTypeId: 'normal',
+    center: new naver.maps.LatLng(36.4203004, 128.317960)
+});
+
+naver.maps.Event.once(map, 'init_stylemap', function () {
+    for (var i = 1; i < 18; i++) {
+        var keyword = i +'';
+
+        if (keyword.length === 1) {
+            keyword = '0'+ keyword;
+        }
+
+        $.ajax({
+            url: urlPrefix + keyword + urlSuffix,
+            success: function(idx) {
+                return function(geojson) {
+                    regionGeoJson[idx] = geojson;
+
+                    loadCount++;
+                    if (loadCount === 17) {
+                        startDataLayer();
+                    }
+                }
+            }(i - 1)
+        });
+    }
+});
+
+var tooltip = $('<div style="position:absolute;z-index:1000;padding:5px 10px;background-color:#fff;border:solid 2px #000;font-size:14px;pointer-events:none;display:none;"></div>');
+tooltip.appendTo(map.getPanes().floatPane);
+
+
+function startDataLayer() {
+
+    map.data.setStyle(function(feature) {
+        
+        var styleOptions = {
+            fillColor: '#ff0000',
+            fillOpacity: 0.0001,
+            strokeColor: '#ff0000',
+            strokeWeight: 2,
+            strokeOpacity: 0.4
+        };
+
+        if (feature.getProperty('focus')) {
+            styleOptions.fillOpacity = 0.6;
+            styleOptions.fillColor = '#0f0';
+            styleOptions.strokeColor = '#0f0';
+            styleOptions.strokeWeight = 4;
+            styleOptions.strokeOpacity = 1;
+        }
+
+        return styleOptions;
+    });
+
+    regionGeoJson.forEach(function(geojson) {
+        map.data.addGeoJson(geojson);
+    });
+
+    map.data.addListener('click', function(e) {
+        var feature = e.feature;
+
+        if (feature.getProperty('focus') !== true) {
+            document.getElementById("table").innerHTML = feature.getProperty('area1');
+            getLocationMessage(feature.getProperty('area1'))
+        } else {
+            feature.setProperty('focus', false);
+        }
+    });
+
+
+    map.data.addListener('mouseover', function(e) {
+        
+        var feature = e.feature,
+            regionName = feature.getProperty('area1');
+
+        tooltip.css({
+            display: '',
+            left: e.offset.x,
+            top: e.offset.y
+        }).text(regionName);
+
+        map.data.overrideStyle(feature, {
+            fillOpacity: 0.6,
+            strokeWeight: 4,
+            strokeOpacity: 1
+        });
+    });
+
+    map.data.addListener('mouseout', function(e) {
+        tooltip.hide().empty();
+
+        map.data.revertStyle();
+    });
+}
+
+function getLocationMessage(location_name){
+    var xhr = new XMLHttpRequest();
+    var url = 'http://apis.data.go.kr/1741000/DisasterMsg4/getDisasterMsg2List'; /*URL*/
+    var queryParams = '?' + encodeURIComponent('serviceKey') + '='+'gkQa%2FRVTxNVD0NxhIkJA31zVSDlFc1mU5p%2BDPJINEe3Cz9s%2F%2F2NlsxH%2B3Wxy%2Bgw0z4yu4xboU7h3qUjnwJyQJA%3D%3D'; /*Service Key*/
+    queryParams += '&' + encodeURIComponent('pageNo') + '=' + encodeURIComponent('1'); /**/
+    queryParams += '&' + encodeURIComponent('numOfRows') + '=' + encodeURIComponent('10'); /**/
+    queryParams += '&' + encodeURIComponent('type') + '=' + encodeURIComponent('xml'); /**/
+    queryParams += '&' + encodeURIComponent('create_date') + '=' + encodeURIComponent('2021/06/22 00:00:00'); /**/
+    queryParams += '&' + encodeURIComponent('location_name') + '=' + encodeURIComponent(location_name); /**/
+    xhr.open('GET', url + queryParams);
+    xhr.onreadystatechange = function () {
+        if (this.readyState == 4) {
+            var xml = this.responseXML;
+            var tableDiv = document.getElementById("table");
+            var locTable = document.createElement("table");
+            var header = locTable.createTHead();
+            var headRow = header.insertRow();
+            var headLoc = headRow.insertCell(0);
+            var headMsg = headRow.insertCell(1);
+            headLoc.style.border = "1px solid"
+            headMsg.style.border = "1px solid"
+            headRow.style.border = "1px solid"
+            headLoc.innerHTML = "지역";
+            headMsg.innerHTML = "문자 내용";
+
+            var rows = xml.getElementsByTagName("row");
+            var locationNames = xml.getElementsByTagName("location_name");
+            var msgs = xml.getElementsByTagName("msg");
+
+            for(i=0;i<rows.length;i++){
+                var row = locTable.insertRow();
+                var cellLoc = row.insertCell(0);
+                var cellMsg = row.insertCell(1);
+                cellLoc.style.border = "1px solid"
+                cellMsg.style.border = "1px solid"
+                cellLoc.innerHTML = locationNames[i].childNodes[0].nodeValue;
+                cellMsg.innerHTML = msgs[i].childNodes[0].nodeValue;
+            }
+            
+            
+            tableDiv.appendChild(locTable);
+        }
+    };
+    xhr.send('');
+}
+
+</script>
+</body>
+</html>
